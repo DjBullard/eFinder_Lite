@@ -29,7 +29,7 @@ if os.path.exists(home_path + "/Solver/eFinder.config") == True:
             line = line.strip("\n").split(":")
             param[line[0]] = str(line[1])
 import Display_Lite
-version = "Live2_1"
+version = "Live2_2"
 handpad = Display_Lite.Handpad(version,param["Flip"])
 handpad.display('ScopeDog eFinder','Lite','Version '+ version)
 import time
@@ -38,7 +38,7 @@ from threading import Thread
 from PIL import Image, ImageDraw,ImageFont, ImageEnhance
 from skyfield.api import load, Star
 import numpy as np
-
+np.math = math
 import Location_live
 import Coordinates_Lite
 from gpiozero import Button
