@@ -1,2 +1,3 @@
 PATH=/home/efinder/venv-efinder/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-@reboot efinder /home/efinder/venv-efinder/bin/python /home/efinder/Solver/eFinder_Lite.py &
+# Start eFinder with comprehensive logging
+@reboot efinder cd /home/efinder && /home/efinder/venv-efinder/bin/python /home/efinder/Solver/eFinder_Lite.py >> /home/efinder/efinder.log 2>&1 &
