@@ -360,7 +360,7 @@ def go_solve():
     handpad.display(arr[x, y][0], arr[x, y][1], arr[x, y][2])
 
 def solveLoop():
-    global x, y, prev
+    global x, y, prev, tilt
     while True:
         capture()
         solveImage(True)
@@ -368,10 +368,15 @@ def solveLoop():
         if up.is_pressed:
             x = y = 0
             break
-        while abs(tilt.acceleration[0] - prev[0]) > threshold or abs(tilt.acceleration[1] - prev[1]) > threshold or abs(tilt.acceleration[2] - prev[2]) > threshold:
-            handpad.display(arr[x, y][0], arr[x, y][1], "Scope moving")
-            time.sleep(0.2)
-            prev = tilt.acceleration
+        # Only check motion if accelerometer is available
+        if tilt is not None:
+            while abs(tilt.acceleration[0] - prev[0]) > threshold or abs(tilt.acceleration[1] - prev[1]) > threshold or abs(tilt.acceleration[2] - prev[2]) > threshold:
+                handpad.display(arr[x, y][0], arr[x, y][1], "Scope moving")
+                time.sleep(0.2)
+                prev = tilt.acceleration
+        else:
+            # No accelerometer, just add a small delay to prevent excessive CPU usage
+            time.sleep(1)
 
 
 def reset_offset():
@@ -415,16 +420,25 @@ def setTilt():
             import board
             import adafruit_adxl34x
             i2c = board.I2C()
-            tilt = adafruit_adxl34x.ADXL345(i2c)
+            # Try default address first, then 0x53 if that fails
+            try:
+                tilt = adafruit_adxl34x.ADXL345(i2c)
+                print("ADXL345 accelerometer initialized at default address")
+            except:
+                tilt = adafruit_adxl34x.ADXL345(i2c, address=0x53)
+                print("ADXL345 accelerometer initialized at address 0x53")
             side = 'auto'
-        except:
+        except Exception as e:
+            print(f"ADXL345 initialization failed: {e}")
             handpad.display("Flip set to auto","but no sensor","setting to 'right'")
-            sys.exit()
+            tilt = None  # Set tilt to None instead of exiting
+            side = 'right'  # Fallback to right side
     else:
-        side = param["Flip"].lower()       
+        side = param["Flip"].lower()
+        tilt = None  # No accelerometer needed for manual flip setting       
 
 def findTilt():
-    if side == 'auto':
+    if side == 'auto' and tilt is not None:
         return tilt.acceleration[1]
     elif side == 'left':
         return -1
