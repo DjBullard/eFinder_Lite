@@ -45,7 +45,11 @@ from datetime import timezone
 
 handpad.display('ScopeDog eFinder','Lite','Loading program')
 i2c = board.I2C()
-tilt = adafruit_adxl34x.ADXL345(i2c)
+# Try default address first, then 0x53 if that fails
+try:
+    tilt = adafruit_adxl34x.ADXL345(i2c)
+except:
+    tilt = adafruit_adxl34x.ADXL345(i2c, address=0x53)
 x = y = 0  # x, y  define what page the display is showing
 deltaAz = deltaAlt = 0
 expInc = 0.1 # sets how much exposure changes when using handpad adjust (seconds)

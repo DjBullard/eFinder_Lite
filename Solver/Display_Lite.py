@@ -21,7 +21,11 @@ class Handpad:
                 import board
                 import adafruit_adxl34x
                 i2c = board.I2C()
-                self.tilt = adafruit_adxl34x.ADXL345(i2c)
+                # Try default address first, then 0x53 if that fails
+                try:
+                    self.tilt = adafruit_adxl34x.ADXL345(i2c)
+                except:
+                    self.tilt = adafruit_adxl34x.ADXL345(i2c, address=0x53)
             except:
                 self.display("tilt set to auto","but no sensor","found")
                 sys.exit()
