@@ -22,7 +22,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt install -y \
   python3-pip python3-venv \
   python3-serial python3-psutil python3-pil python3-pil.imagetk \
   python3-smbus python3-picamera2 python3-skyfield python3-rpi-lgpio \
-  python3-grpcio python3-grpcio-tools \
+  python3-grpcio python3-grpc-tools \
   gpsd git apache2 php8.2
 
 HOME=/home/efinder
