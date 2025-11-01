@@ -48,7 +48,7 @@ echo " "
 echo "*****************************************************************************"
 echo "Downloading eFinder_Lite from AstroKeith GitHub"
 echo "*****************************************************************************"
-sudo -u efinder git clone https://github.com/AstroKeith/eFinder_Lite.git
+sudo -u efinder git clone https://github.com/DjBullard/eFinder_Lite.git
 echo " "
 echo "*****************************************************************************"
 echo "Installing ASI camera support"
@@ -125,7 +125,7 @@ echo "Setting up web page server"
 echo "*****************************************************************************"
 sudo apt-get install -y apache2
 sudo apt-get install -y php8.2
-sudo chmod a+rwx /home/efinder
+sudo chmod 755 /home/efinder
 sudo chmod a+rwx /home/efinder/Solver
 sudo chmod a+rwx /home/efinder/Solver/eFinder.config
 sudo cp eFinder_Lite/Solver/www/*.* /var/www/html
