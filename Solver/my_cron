@@ -1,3 +1,5 @@
+SHELL=/bin/bash
 PATH=/home/efinder/venv-efinder/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-# Start eFinder with comprehensive logging
-@reboot efinder cd /home/efinder && /home/efinder/venv-efinder/bin/python /home/efinder/Solver/eFinder_Lite.py >> /home/efinder/efinder.log 2>&1 &
+
+# Start eFinder via Script
+@reboot  efinder  /home/efinder/eFinder_Lite/Utility_Scripts/start_efinder.sh
