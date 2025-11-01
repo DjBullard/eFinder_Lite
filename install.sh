@@ -1,37 +1,53 @@
 #!/bin/sh
 
+set -eu
+
+VENV="$HOME/venv-efinder"
+PY="$VENV/bin/python"
+
 echo "eFinder Lite install with Cedar-solve"
 echo " "
 echo "*****************************************************************************"
 echo "Updating Pi OS & packages"
 echo "*****************************************************************************"
 sudo apt update
-# sudo apt upgrade -y
+# sudo apt -y full-upgrade
 echo " "
+
 echo "*****************************************************************************"
 echo "Installing additional Debian and Python packages"
 echo "*****************************************************************************"
-sudo apt install -y python3-pip python3-serial python3-psutil python3-pil python3-pil.imagetk git python3-smbus python3-picamera2 gpsd python3-skyfield python3-rpi-lgpio apache2 php8.2
+# Add python3-venv (for venv) and python3-grpcio* (avoid compiling grpc on ARM)
+sudo DEBIAN_FRONTEND=noninteractive apt install -y \
+  python3-pip python3-venv \
+  python3-serial python3-psutil python3-pil python3-pil.imagetk \
+  python3-smbus python3-picamera2 python3-skyfield python3-rpi-lgpio \
+  python3-grpcio python3-grpcio-tools \
+  gpsd git apache2 php8.2
 
 HOME=/home/efinder
-cd $HOME
+cd "$HOME"
+
 echo " "
 echo "*****************************************************************************"
 echo "Installing new astrometry packages"
 echo "*****************************************************************************"
 
-python -m venv /home/efinder/venv-efinder --system-site-packages
+# Create (or refresh tooling in) the venv; expose system site-packages so APT gRPC is visible
+python3 -m venv "$VENV" --system-site-packages --upgrade-deps
 
-venv-efinder/bin/python venv-efinder/bin/pip install adafruit-circuitpython-adxl34x
-venv-efinder/bin/python venv-efinder/bin/pip install grpcio
-venv-efinder/bin/python venv-efinder/bin/pip install grpcio-tools
-venv-efinder/bin/python venv-efinder/bin/pip install gdown
-venv-efinder/bin/python venv-efinder/bin/pip install gps3
-venv-efinder/bin/python venv-efinder/bin/pip install tzlocal
+# One resolver pass; prefer wheels for speed on ARM
+# (grpcio/grpcio-tools come from APT and are already available inside the venv)
+PIP_DISABLE_PIP_VERSION_CHECK=1 \
+PIP_NO_INPUT=1 \
+"$PY" -m pip install --prefer-binary \
+  adafruit-circuitpython-adxl34x \
+  gdown \
+  gps3 \
+  tzlocal
 
 sudo -u efinder git clone https://github.com/smroid/cedar-detect.git
 sudo -u efinder git clone https://github.com/smroid/cedar-solve.git
-
 
 cd $HOME
 echo " "
