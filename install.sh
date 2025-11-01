@@ -6,21 +6,12 @@ echo "**************************************************************************
 echo "Updating Pi OS & packages"
 echo "*****************************************************************************"
 sudo apt update
-sudo apt upgrade -y
+# sudo apt upgrade -y
 echo " "
 echo "*****************************************************************************"
 echo "Installing additional Debian and Python packages"
 echo "*****************************************************************************"
-sudo apt install -m -y python3-pip
-sudo apt install -y python3-serial
-sudo apt install -y python3-psutil
-sudo apt install -y python3-pil
-sudo apt install -y python3-pil.imagetk
-sudo apt install -y git
-sudo apt install -y python3-smbus
-sudo apt install -y python3-picamera2
-sudo apt install -y gpsd
-
+sudo apt install -y python3-pip python3-serial python3-psutil python3-pil python3-pil.imagetk git python3-smbus python3-picamera2 gpsd python3-skyfield python3-rpi-lgpio apache2 php8.2
 
 HOME=/home/efinder
 cd $HOME
@@ -28,7 +19,6 @@ echo " "
 echo "*****************************************************************************"
 echo "Installing new astrometry packages"
 echo "*****************************************************************************"
-sudo apt install -y python3-skyfield
 
 python -m venv /home/efinder/venv-efinder --system-site-packages
 
@@ -86,28 +76,28 @@ wget https://github.com/joan2937/lg/archive/master.zip
 unzip master.zip
 cd lg-master
 sudo make install
-sudo apt install -y python3-rpi-lgpio
+#sudo apt install -y python3-rpi-lgpio
 cd /home/efinder/Solver
 unzip drive.zip
 
 cd $HOME
-echo " "
-echo "*****************************************************************************"
-echo "Installing Samba file share support"
+# echo " "
+# echo "*****************************************************************************"
+# echo "Installing Samba file share support"
 
-sudo apt install -y samba samba-common-bin
-sudo tee -a /etc/samba/smb.conf > /dev/null <<EOT
-[efindershare]
-path = /home/efinder
-writeable=Yes
-create mask=0777
-directory mask=0777
-public=no
-EOT
-username="efinder"
-pass="efinder"
-(echo $pass; sleep 1; echo $pass) | sudo smbpasswd -a -s $username
-sudo systemctl restart smbd
+# sudo apt install -y samba samba-common-bin
+# sudo tee -a /etc/samba/smb.conf > /dev/null <<EOT
+# [efindershare]
+# path = /home/efinder
+# writeable=Yes
+# create mask=0777
+# directory mask=0777
+# public=no
+# EOT
+# username="efinder"
+# pass="efinder"
+# (echo $pass; sleep 1; echo $pass) | sudo smbpasswd -a -s $username
+# sudo systemctl restart smbd
 
 cd $HOME
 echo " "
@@ -123,8 +113,8 @@ echo " "
 echo "*****************************************************************************"
 echo "Setting up web page server"
 echo "*****************************************************************************"
-sudo apt-get install -y apache2
-sudo apt-get install -y php8.2
+# sudo apt-get install -y apache2
+# sudo apt-get install -y php8.2
 sudo chmod 755 /home/efinder
 sudo chmod a+rwx /home/efinder/Solver
 sudo chmod a+rwx /home/efinder/Solver/eFinder.config
